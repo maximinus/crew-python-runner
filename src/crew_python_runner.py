@@ -27,7 +27,7 @@ class RunnerError(Exception):
     pass
 
 
-def get_code_temp_file(code):
+def get_code_temp_file(code: str):
     temp_file = tempfile.NamedTemporaryFile(mode='w+t', delete=False, suffix='.py')
     temp_file.write(code)
     temp_file.flush()
@@ -36,7 +36,7 @@ def get_code_temp_file(code):
     return Path(temp_file.name)
 
 
-def create_tar_from_code(code):
+def create_tar_from_code(code: str):
     """Create a tar archive containing the specified file."""
     code_file = get_code_temp_file(code)
     with open(code_file, 'rb') as f:
@@ -52,25 +52,26 @@ def create_tar_from_code(code):
 
 
 class PythonResult:
-    def __init__(self, error, result):
+    def __init__(self, error: int, result):
         self.error_code = error
-        # convert to
+        # convert to string from bytecode if required
         try:
             result = result.decode()
         except (UnicodeError, AttributeError):
             pass
-        self.output = result
+        # strip ending \n if it exists
+        self.output = result.rstrip()
 
 
-class DockerController:
+class DockerRunner:
     def __init__(self, version=DEFAULT_PYTHON_VERSION):
         self.version = version
         self.client = docker.from_env()
         self.runner = self.start_runner()
 
     def create_docker_image(self):
-        # init the python version
-        print('* Creating docker image. This may be slow.')
+        # init the python version. this may involve a download
+        # Convert to "file like object" for the docker setup
         formatted_docker_file = io.BytesIO(str.encode(docker_file.format(version=self.version)))
         # from docs: The first item is the Image object for the image that was built.
         return self.client.images.build(fileobj=formatted_docker_file, tag=DEFAULT_DOCKER_TAG)[0]
@@ -89,7 +90,7 @@ class DockerController:
         except (BuildError, APIError, ContainerError) as ex:
             raise RunnerError(ex)
 
-    def run_python_code(self, code):
+    def run_python(self, code: str) -> PythonResult:
         # copy the file to the docker image
         tar, filepath = create_tar_from_code(code)
         self.runner.put_archive(DOCKER_FOLDER, tar)
@@ -103,4 +104,4 @@ class DockerController:
         return PythonResult(exit_code, output)
 
 
-controller = DockerController()
+runner = DockerRunner()
