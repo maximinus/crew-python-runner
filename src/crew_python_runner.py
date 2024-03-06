@@ -8,6 +8,7 @@ import tempfile
 from pathlib import Path
 from docker.errors import ImageNotFound, BuildError, APIError, ContainerError
 
+from crewai_tools import tool
 
 DEFAULT_PYTHON_VERSION = '3.11'
 DEFAULT_DOCKER_TAG = 'crew-python-runner'
@@ -67,7 +68,7 @@ class DockerRunner:
     def __init__(self, version=DEFAULT_PYTHON_VERSION):
         self.version = version
         self.client = docker.from_env()
-        self.runner = self.start_runner()
+        self.runner = None
 
     def create_docker_image(self):
         # init the python version. this may involve a download
@@ -105,3 +106,16 @@ class DockerRunner:
 
 
 runner = DockerRunner()
+
+
+@tool('python_runner')
+def python_runner(question: str):
+    """
+    This tool can run Python code. Pass the code and this tool will run it as a file on the command line.
+    The returned value will be the output of the python code, so if you pass print('Hello') it will give you back Hello.
+    if the code has an error, you will get the expected Python error code.
+    If the code has no output, you will get an empty string.
+    You must pass only the python code, nothing else. The python version iit will run is 3.11.
+    """
+    result = runner.run_python(question)
+    return result.output
