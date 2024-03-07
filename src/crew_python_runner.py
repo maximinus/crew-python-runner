@@ -6,9 +6,11 @@ import tarfile
 import tempfile
 
 from pathlib import Path
+from typing import Optional, Type, Any
+from pydantic.v1 import BaseModel, Field
 from docker.errors import ImageNotFound, BuildError, APIError, ContainerError
 
-from crewai_tools import tool
+from crewai_tools import tool, BaseTool, ScrapeWebsiteTool
 
 DEFAULT_PYTHON_VERSION = '3.11'
 DEFAULT_DOCKER_TAG = 'crew-python-runner'
@@ -109,7 +111,7 @@ runner = DockerRunner()
 
 
 @tool('python_runner')
-def python_runner(question: str):
+def python_runner(question: str) -> str:
     """
     This tool can run Python code. Pass the code and this tool will run it as a file on the command line.
     The returned value will be the output of the python code, so if you pass print('Hello') it will give you back Hello.
