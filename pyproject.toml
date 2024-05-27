@@ -8,14 +8,7 @@ description = 'Package to run crew.ai generated code in a docker instance'
 readme = 'README.md'
 requires-python = '>=3.11'
 dependencies = [
-    'docker>=7.0.0',
-    'certifi==2024.2.2',
-    'charset-normalizer==3.3.2',
-    'docker==7.0.0',
-    'idna==3.6',
-    'packaging==23.2',
-    'requests==2.31.0',
-    'urllib3==2.2.1'
+    'docker>=7.0.0'
 ]
 classifiers = [
     'Programming Language :: Python :: 3',
