@@ -1,10 +1,10 @@
 # crew-python-runner
 
-Allows crew.ai agents to run python code in dockerised containers.
+Allows crew.ai agents to run python code in dockerized containers.
 
 LLM code should not be run locally on your system, but we would like the ability of crew.ai agents to run Python code so they can see that it works.
 
-crew_python_runner will take your agents code and run it in a Docker instance, so you can be sure that nothing bad will happen to your code.
+`crew_python_runner` will take your agents code and run it in a Docker instance, so you can be sure that nothing bad will happen to your code.
 
 
 ## Installation
@@ -13,7 +13,7 @@ You will need Docker installed on your system
 
     pip install crew_python_runner
 
-Note that crew_python_runner has a dependency on crewai_tools, which has quite a lot of dependencies; this is likely not an issue if you have crewai already in your virtual environment.
+Note that crew_python_runner has a dependency on `crewai[tools]`, which has quite a lot of dependencies; this is likely not an issue if you have crewai already in your virtual environment.
 
  
  ## Setup
@@ -22,7 +22,7 @@ Note that crew_python_runner has a dependency on crewai_tools, which has quite a
 
     python -c "import crew_python_runner"
 
-This will ensure the image is pulled. Alternatively, pull the image from docker yourself on the command line
+Before using the library, as otherwise you may see a delay in usage. Alternatively, pull the image from docker yourself on the command line
 
     docker image pull python:3.11
 
@@ -37,7 +37,7 @@ To use as a crew.ai tool:
     programmer = Agent(
         role='Senior Python Programmer',
         goal='Write simple, well crafted and bug-free Python code',
-        backstory='You a skilled Python programmer with a passion for writing working Python code',
+        backstory='You are a skilled Python programmer with a passion for writing working Python code',
         tools=[python_runner])
 
 
@@ -52,7 +52,5 @@ This returns a class with 2 variables, *error_code*, an integer, and *output*, a
 ## Future Enhancements
 
 * Another tool giving coder agents the ability to *pip install* packages.
-* The ability to run other languages.
 * The tool will auto-restart the docker instance if it falls over (which could be because of rogue code).
-* The abilty to log all code and results.
-* The tool will not auto-start the docker container, and will ensure it closes on code exit.
+* The ability to log all code and results.
