@@ -1,6 +1,6 @@
 [project]
 name = 'crew_python_runner'
-version = '0.1.0'
+version = '0.2.0'
 authors = [
   { name='Chris Handy', email='maximinus@gmail.com'},
 ]

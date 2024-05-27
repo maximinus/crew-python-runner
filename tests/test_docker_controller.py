@@ -1,6 +1,6 @@
 import unittest
 
-from src.crew_python_runner import controller
+from src.crew_python_runner import runner
 
 
 def get_python_code(filename):
@@ -11,13 +11,13 @@ def get_python_code(filename):
 class TestSimpleCodeRuns(unittest.TestCase):
     def test_code_runs(self):
         code = get_python_code('test_print')
-        result = controller.run_python_code(code)
+        result = runner.run_python(code)
         self.assertEqual(result.output, 'Running!')
         self.assertEqual(result.error_code, 0)
 
     def test_error_output(self):
         code = get_python_code('test_error')
-        result = controller.run_python_code(code)
+        result = runner.run_python(code)
         self.assertTrue(result.output.startswith('Traceback (most recent call last):'))
         self.assertTrue(result.output.rstrip().endswith('division by zero'))
         self.assertEqual(result.error_code, 1)

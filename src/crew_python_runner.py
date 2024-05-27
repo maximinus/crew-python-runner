@@ -6,11 +6,9 @@ import tarfile
 import tempfile
 
 from pathlib import Path
-from typing import Optional, Type, Any
-from pydantic.v1 import BaseModel, Field
 from docker.errors import ImageNotFound, BuildError, APIError, ContainerError
 
-from crewai_tools import tool, BaseTool, ScrapeWebsiteTool
+from crewai_tools import tool
 
 DEFAULT_PYTHON_VERSION = '3.11'
 DEFAULT_DOCKER_TAG = 'crew-python-runner'
@@ -70,7 +68,7 @@ class DockerRunner:
     def __init__(self, version=DEFAULT_PYTHON_VERSION):
         self.version = version
         self.client = docker.from_env()
-        self.runner = None
+        self.runner = self.start_runner()
 
     def create_docker_image(self):
         # init the python version. this may involve a download
@@ -110,14 +108,16 @@ class DockerRunner:
 runner = DockerRunner()
 
 
-@tool('python_runner')
-def python_runner(question: str) -> str:
+@tool('pythonrunner')
+def pythonrunner(python_code: str) -> str:
     """
     This tool can run Python code. Pass the code and this tool will run it as a file on the command line.
     The returned value will be the output of the python code, so if you pass print('Hello') it will give you back Hello.
-    if the code has an error, you will get the expected Python error code.
+    This tool will put your code into a file and then run the file as python -c your_code_file.py in a virtual machine.
+    Pass this tool the python code as you would expect it to look in a file. You will have to indent the code properly.
+    If the code has an error, you will get the expected Python error code.
     If the code has no output, you will get an empty string.
-    You must pass only the python code, nothing else. The python version iit will run is 3.11.
     """
-    result = runner.run_python(question)
+    # check for extra arguments and tell the llm where it went wrong
+    result = runner.run_python(python_code)
     return result.output
