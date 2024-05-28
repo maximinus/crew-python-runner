@@ -22,6 +22,11 @@ class TestSimpleCodeRuns(unittest.TestCase):
         self.assertTrue(result.output.rstrip().endswith('division by zero'))
         self.assertEqual(result.error_code, 1)
 
+    def test_string_repr(self):
+        code = get_python_code('test_print')
+        result = runner.run_python(code)
+        self.assertEqual(str(result), '0: Running!')
+
 
 if __name__ == '__main__':
     unittest.main()

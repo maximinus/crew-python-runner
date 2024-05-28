@@ -63,6 +63,9 @@ class PythonResult:
         # strip ending \n if it exists
         self.output = result.rstrip()
 
+    def __repr__(self):
+        return f'{self.error_code}: {self.output}'
+
 
 class DockerRunner:
     def __init__(self, version=DEFAULT_PYTHON_VERSION):

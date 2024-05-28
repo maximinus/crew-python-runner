@@ -31,7 +31,7 @@ Before using the library, as otherwise you may see a delay in usage. Alternative
 
 To use as a crew.ai tool:
 
-    from crew_python_runner import python_runner
+    from crew_python_runner import runner
 
     # this is just an example - setup your agent however you like
     programmer = Agent(
